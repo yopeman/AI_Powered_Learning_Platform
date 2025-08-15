@@ -15,7 +15,7 @@ import Results from './results.js';
 import bcrypt from 'bcrypt';
 
 (async () => {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     await Users.sync();
     await Fields.sync();
     await Courses.sync();
