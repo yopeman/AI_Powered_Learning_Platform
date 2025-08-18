@@ -3,7 +3,7 @@ import path, { dirname } from 'path';
 import { Courses, Fields, Users, Certifications, Results } from "../models/index.js";
 import { Op } from "sequelize";
 import { generateQuestion_By_OpenAI, generateQuestion_By_GoogleGenAI } from '../utilities/ai-service.js';
-import fs from 'fs';
+import fs from 'fs/promises';
 import { createError } from '../utilities/error-handlers.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ async function certification_questions(req, res, next) {
         }
 
         if (certification.questions_file_path) {
-            const questions = fs.readFileSync(certification.questions_file_path, 'utf8');
+            const questions = fs.readFile(certification.questions_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Certification questions fetched successfully.',
                 data: JSON.parse(questions),

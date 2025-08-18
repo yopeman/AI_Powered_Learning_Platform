@@ -1,7 +1,7 @@
 import { Interactions, Subscriptions, Topics } from '../models/index.js';
 import { generateContent_By_OpenAI, generateContent_By_GoogleGenAI } from '../utilities/ai-service.js';
 import { generateAnswer_By_OpenAI, generateAnswer_By_GoogleGenAI } from '../utilities/ai-service.js';
-import fs from 'fs';
+import fs from 'fs/promises';
 import { Op } from 'sequelize';
 import { find_topics } from '../utilities/finds.js';
 import hasStudentPermission from '../utilities/student-permissions.js';
@@ -146,7 +146,7 @@ async function topic_content(req, res, next) {
         }
 
         if (topic.content_file_path) {
-            const contents = fs.readFileSync(topic.content_file_path, 'utf8');
+            const contents = fs.readFile(topic.content_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Data fetched successfully.',
                 data: contents,
@@ -225,7 +225,7 @@ async function topic_ask(req, res, next) {
         }
 
         if (interaction.response_file_path) {
-            const contents = fs.readFileSync(interaction.response_file_path, 'utf8');
+            const contents = fs.readFile(interaction.response_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Data fetched successfully.',
                 data: contents,
@@ -234,7 +234,7 @@ async function topic_ask(req, res, next) {
         }
 
         const topicDetail = await find_topics(id);
-        const history = fs.readFileSync(topicDetail.topics.content_file_path, 'utf8');
+        const history = fs.readFile(topicDetail.topics.content_file_path, 'utf8');
         const context = {
             question,
             history
@@ -284,7 +284,7 @@ async function topic_current_interactions(req, res, next) {
         }
 
         const fullInteractions = interactions.map(interaction => {
-            const responseData = fs.readFileSync(interaction.response_file_path, 'utf-8'); // Read file content
+            const responseData = fs.readFile(interaction.response_file_path, 'utf-8'); // Read file content
             return { ...interaction.toJSON(), response: responseData }; // Use toJSON() to get plain object
         });
 
