@@ -7,7 +7,7 @@ function handler(req, res, next) {
 }
 
 function error_handler(err, req, res, next) {
-    console.error(err);
+    console.error(err, err.response);
     fs.writeFileSync('error.log', `${new Date().toISOString()} - ${err.message} - ${err.stack}\n\n`, { flag: 'a' });
 
     res.status(err.status || 500).json({

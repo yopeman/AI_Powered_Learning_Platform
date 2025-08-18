@@ -43,7 +43,7 @@ export default async function hasStudentPermission(userId, topicId) {
             return 'Payment is required for this year and semester.';
         }
 
-        return 'Access denied: additional conditions not met.';
+        return true;
     } catch (error) {
         console.error(`Error checking permissions: ${error.message}`);
         return 'An error occurred while checking permissions.';

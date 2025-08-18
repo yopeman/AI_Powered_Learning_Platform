@@ -36,7 +36,12 @@ const handleApiResponse = async (apiCall, storageKey) => {
   } catch (err) {
     console.log(err);
     const cachedData = await AsyncStorage.getItem(storageKey);
-    return cachedData ? JSON.parse(cachedData) : null; // Return null if there's no cached data
+    
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    } else {
+      throw err;
+    }
   }
 };
 

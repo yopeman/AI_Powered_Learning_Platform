@@ -73,6 +73,9 @@ async function payment_create(req, res, next) {
             }
         });
 
+        console.log(paymentInit.data);
+        
+
         if (paymentInit.data.status !== 'success') {
             return next(createError(500, 'Payment initialization failed.'));
         }

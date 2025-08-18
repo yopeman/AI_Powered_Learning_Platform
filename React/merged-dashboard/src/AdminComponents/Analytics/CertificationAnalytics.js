@@ -40,7 +40,7 @@ export default function CertificationAnalytics() {
       label: 'Average Score', 
       value: (
         <div className="score-badge">
-          {analytic.averageScore.toFixed(1)}%
+          {analytic.averageScore?.toFixed(1) || 0}%
         </div>
       ) 
     },
