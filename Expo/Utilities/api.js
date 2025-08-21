@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL =  'http://127.0.0.1:7000';
+const BASE_URL =  'https://aiplp.vercel.app';
 
 const api = (bearer) => axios.create({
     baseURL: `${BASE_URL}/api/v1`,

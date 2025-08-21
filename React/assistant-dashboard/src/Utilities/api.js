@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from './data-storage';
 
-const DOMAIN =  'http://127.0.0.1:7000';
+const DOMAIN =  'https://aiplp.vercel.app';
 
 export const api = axios.create({
     baseURL: `${DOMAIN}/api/v1`,
