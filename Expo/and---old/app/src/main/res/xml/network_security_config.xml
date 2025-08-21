@@ -3,6 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">ai-powered-learning-platform.onrender.com</domain>
+        <domain includeSubdomains="true">aiplp.vercel.app</domain>
         <domain includeSubdomains="true">10.162.208.229</domain> <!-- Your IP -->
     </domain-config>
 </network-security-config>
