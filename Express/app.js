@@ -20,7 +20,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 app.use(cors());
-app.use(helmet());
+// app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

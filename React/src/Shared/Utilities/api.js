@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const DOMAIN = 'https://aiplp.vercel.app';
+const DOMAIN = 'https://aiplp-yopes-projects.vercel.app/';
 
 export const api = axios.create({
     baseURL: `${DOMAIN}/api/v1`,

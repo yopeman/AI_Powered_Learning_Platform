@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL =  'https://aiplp.vercel.app';
+const DOMAIN =  'https://aiplp-yopes-projects.vercel.app/';
 
 const api = (bearer) => axios.create({
-    baseURL: `${BASE_URL}/api/v1`,
+    baseURL: `${DOMAIN}/api/v1`,
     headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${bearer}`
@@ -11,7 +11,7 @@ const api = (bearer) => axios.create({
 });
 
 const authApi = axios.create({
-    baseURL: `${BASE_URL}`,
+    baseURL: `${DOMAIN}`,
     headers: {
         'Content-Type': 'application/json'
     }
