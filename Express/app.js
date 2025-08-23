@@ -58,11 +58,22 @@ app.use((req, res) => {
 app.use(handler);
 app.use(error_handler);
 
-// Sync the database and start the server
-sequelize.sync().then(() => {
+// // Sync the database and start the server
+// sequelize.sync().then(() => {
+//     const PORT = process.env.PORT || 7000;
+//     app.listen(PORT, (err) => {
+//         if (err) console.error(err);
+//         console.log(`Server running at http://127.0.0.1:${PORT}`);
+//     });
+// }).catch(err => console.error(err));
+
+if (process.env.NODE_ENV !== 'vercel') {
+  sequelize.sync().then(() => {
     const PORT = process.env.PORT || 7000;
     app.listen(PORT, (err) => {
-        if (err) console.error(err);
-        console.log(`Server running at http://127.0.0.1:${PORT}`);
+      if (err) console.error(err);
+      console.log(`Server running at http://127.0.0.1:${PORT}`);
     });
-}).catch(err => console.error(err));
+  }).catch(err => console.error(err));
+}
+export default app;
