@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { v1 as uuidv1 } from 'uuid';
 import dotenv from 'dotenv';
-import mysql2 from 'mysql2';
+// import mysql2 from 'mysql2';
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -10,7 +10,7 @@ const sequelize = new Sequelize(
     process.env.DB_PASS, {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT || 'mysql',
-    dialectModule: mysql2,
+    // dialectModule: mysql2,
     logging: false,
     pool: {
       max: 5,
