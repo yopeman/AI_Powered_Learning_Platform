@@ -1,4 +1,4 @@
-import /* React, */ { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Menu,
   X,
@@ -493,7 +493,7 @@ export default function Components() {
 
         {/* Floating Download Button */}
         <a
-            href="https://expo.dev/artifacts/eas/5AqpVyX5EaUgg9bar9PtYj.apk"
+            href="https://expo.dev/artifacts/eas/hvSqpKfTPYcubMc6myrXge.apk"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 z-40 flex items-center"
