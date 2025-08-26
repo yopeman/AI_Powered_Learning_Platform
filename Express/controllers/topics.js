@@ -79,6 +79,7 @@ async function topic_update(req, res, next) {
     }
 
     try {
+        req.body.content_file_path = null;
         const [updated] = await Topics.update(req.body, { where: { id } });
 
         if (!updated) {
