@@ -38,8 +38,8 @@ async function certification_questions(req, res, next) {
         const dirPath = path.join(__dirname, `../public/Fields_${fieldId}/Certifications`);
         const filePath = path.join(dirPath, `Certifications_${certification.id}.json`);
 
-        await fs.promises.mkdir(dirPath, { recursive: true });
-        await fs.promises.writeFile(filePath, generatedQuestions);
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedQuestions);
         
         certification.questions_file_path = filePath;
         await certification.save();

@@ -166,8 +166,8 @@ async function topic_content(req, res, next) {
         const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Contents`);
         const filePath = path.join(dirPath, `Contents_${topicDetail.topics.id}.md`);
 
-        await fs.promises.mkdir(dirPath, { recursive: true });
-        await fs.promises.writeFile(filePath, generatedContent);
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedContent);
         await Topics.update({ content_file_path: filePath }, { where: { id } });
 
         const subscription = await Subscriptions.findOne({
@@ -244,8 +244,8 @@ async function topic_ask(req, res, next) {
         const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Interactions`);
         const filePath = path.join(dirPath, `Interactions_${interaction.id}.md`);
 
-        await fs.promises.mkdir(dirPath, { recursive: true });
-        await fs.promises.writeFile(filePath, generatedContent);
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedContent);
         interaction.response_file_path = filePath;
         await interaction.save();
 
