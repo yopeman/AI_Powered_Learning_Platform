@@ -163,7 +163,7 @@ async function topic_content(req, res, next) {
         };
 
         const generatedContent = await generateContent(topicDetail.topics.title, context);
-        const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Contents`);
+        const dirPath = path.join(__dirname, `/public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Contents`);
         const filePath = path.join(dirPath, `Contents_${topicDetail.topics.id}.md`);
 
         await fs.mkdir(dirPath, { recursive: true });
@@ -241,7 +241,7 @@ async function topic_ask(req, res, next) {
         };
 
         const generatedContent = await generateAnswer(question, context);
-        const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Interactions`);
+        const dirPath = path.join(__dirname, `/public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Interactions`);
         const filePath = path.join(dirPath, `Interactions_${interaction.id}.md`);
 
         await fs.mkdir(dirPath, { recursive: true });
