@@ -261,12 +261,13 @@ async function topic_current_interactions(req, res, next) {
         return next(createError(400, 'Topic ID is required.'));
     }
 
-    const permissionMsg = await hasStudentPermission(req.user.id, topicId);
+    const permissionMsg = await hasStudentPermission(userId, topicId);
     if (permissionMsg !== true) {
-        return next(createError(400, permissionMsg));
+        return next(createError(403, permissionMsg)); // Use 403 for permission issues
     }
 
-    try {const interactions = await Interactions.findAll({
+    try {
+        const interactions = await Interactions.findAll({
             where: {
                 topicId,
                 userId,
@@ -277,12 +278,14 @@ async function topic_current_interactions(req, res, next) {
             return next(createError(404, 'No interactions found for this user and topic.'));
         }
 
-        const fullInteractions = interactions.map(async (interaction) => {
-            const responseData = await FileContents.findByPk(interaction.response_file_path); // Read file content
-            return { ...interaction.toJSON(), response: responseData.content }; // Use toJSON() to get plain object
-        });
+        const fullInteractions = await Promise.all(interactions.map(async (interaction) => {
+            const responseData = await FileContents.findByPk(interaction.response_file_path);
+            return {
+                ...interaction.toJSON(),
+                response: responseData ? responseData.content : null, // Safely handle missing response data
+            };
+        }));
 
-        // Response without response_file_path
         res.status(200).json({
             message: 'Interactions fetched successfully.',
             data: fullInteractions,
