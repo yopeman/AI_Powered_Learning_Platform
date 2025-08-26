@@ -35,10 +35,11 @@ async function certification_questions(req, res, next) {
         const courses = await Courses.findAll({ where: { fieldId } });
         const generatedQuestions = await generateQuestion(field, JSON.stringify(courses));
         
-        const dirPath = path.join(__dirname, `../public/Fields_${fieldId}/Certifications`);
+        // const dirPath = path.join(__dirname, `../public/Fields_${fieldId}/Certifications`);
+        const dirPath = '/tmp';
         const filePath = path.join(dirPath, `Certifications_${certification.id}.json`);
 
-        await fs.mkdir(dirPath, { recursive: true });
+        // await fs.mkdir(dirPath, { recursive: true });
         await fs.writeFile(filePath, generatedQuestions);
         
         certification.questions_file_path = filePath;
