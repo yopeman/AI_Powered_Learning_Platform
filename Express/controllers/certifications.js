@@ -30,7 +30,7 @@ async function certification_questions(req, res, next) {
         const generatedQuestions = await generateQuestion(field, JSON.stringify(courses));
         const file = await FileContents.create({
             content: generatedQuestions,
-            certification_id: certification.id
+            certificationId: certification.id
         });
 
         certification.questions_file_path = file.id;

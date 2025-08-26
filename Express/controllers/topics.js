@@ -79,6 +79,7 @@ async function topic_update(req, res, next) {
     }
 
     try {
+        await FileContents.destroy({ where: { topicId: id } });
         req.body.content_file_path = null;
         const [updated] = await Topics.update(req.body, { where: { id } });
 
@@ -160,7 +161,7 @@ async function topic_content(req, res, next) {
         const generatedContent = await generateContent(topicDetail.topics.title, context);
         const file = await FileContents.create({
             content: generatedContent,
-            topic_id: topic.id
+            topicId: topic.id
         });
 
         topic.content_file_path = file.id;
@@ -236,7 +237,7 @@ async function topic_ask(req, res, next) {
         const generatedAnswer = await generateAnswer(question, context);
         const file = await FileContents.create({
             content: generatedAnswer,
-            interaction_id: interaction.id,
+            interactionId: interaction.id,
         });
 
         interaction.response_file_path = file.id;

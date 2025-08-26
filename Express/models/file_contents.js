@@ -10,7 +10,7 @@ const FileContents = sequelize.define('FileContents', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    topic_id: {
+    topicId: {
         type: DataTypes.UUID,
         allowNull: true,
         references: {
@@ -20,7 +20,7 @@ const FileContents = sequelize.define('FileContents', {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     },
-    interaction_id: {
+    interactionId: {
         type: DataTypes.UUID,
         allowNull: true,
         references: {
@@ -30,7 +30,7 @@ const FileContents = sequelize.define('FileContents', {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     },
-    certification_id: {
+    certificationId: {
         type: DataTypes.UUID,
         allowNull: true,
         references: {
@@ -45,7 +45,7 @@ const FileContents = sequelize.define('FileContents', {
     tableName: 'FileContents',
     uniqueKeys: {
         unq: {
-            fields: ['topic_id', 'interaction_id', 'certification_id']
+            fields: ['topicId', 'interactionId', 'certificationId']
         }
     }
 });
