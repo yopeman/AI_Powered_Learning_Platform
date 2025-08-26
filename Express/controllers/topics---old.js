@@ -1,10 +1,17 @@
-import { FileContents, Interactions, Subscriptions, Topics } from '../models/index.js';
+import { Interactions, Subscriptions, Topics } from '../models/index.js';
 import { generateContent_By_OpenAI, generateContent_By_GoogleGenAI } from '../utilities/ai-service.js';
 import { generateAnswer_By_OpenAI, generateAnswer_By_GoogleGenAI } from '../utilities/ai-service.js';
+import fs from 'fs/promises';
+import { Op } from 'sequelize';
 import { find_topics } from '../utilities/finds.js';
 import hasStudentPermission from '../utilities/student-permissions.js';
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
 import { hasAssistantChapterPermission, hasAssistantTopicPermission } from '../utilities/assistant-permissions.js';
 import { createError } from '../utilities/error-handlers.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function topic_get_by_id(req, res, next) {
     const { id } = req.params;
@@ -123,14 +130,13 @@ async function topic_delete(req, res, next) {
 
 async function topic_content(req, res, next) {
     const { id } = req.params;
-
     if (!id) {
         return next(createError(400, 'Topic ID is required.'));
     }
 
     const permissionMsg = await hasStudentPermission(req.user.id, id);
     if (permissionMsg !== true) {
-        return next(createError(403, permissionMsg));
+        return next(createError(400, permissionMsg));
     }
 
     try {
@@ -140,13 +146,13 @@ async function topic_content(req, res, next) {
         }
 
         if (topic.content_file_path) {
-            const contents = await FileContents.findByPk(topic.content_file_path);
+            const contents = fs.readFile(topic.content_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Data fetched successfully.',
-                data: contents.content,
+                data: contents,
                 success: true,
             });
-        }
+        } 
 
         const topicDetail = await find_topics(id);
         const context = {
@@ -157,25 +163,24 @@ async function topic_content(req, res, next) {
         };
 
         const generatedContent = await generateContent(topicDetail.topics.title, context);
-        const file = await FileContents.create({
-            content: generatedContent,
-            topic_id: topic.id
-        });
+        const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Contents`);
+        const filePath = path.join(dirPath, `Contents_${topicDetail.topics.id}.md`);
 
-        topic.content_file_path = file.id;
-        await topic.save();
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedContent);
+        await Topics.update({ content_file_path: filePath }, { where: { id } });
 
         const subscription = await Subscriptions.findOne({
             where: {
-                userId: req.user.id,
-                fieldId: topicDetail.fields.id
+                [Op.and]: [
+                    { userId: req.user.id },
+                    { fieldId: topicDetail.fields.id }
+                ]
             }
         });
-
-        if (subscription) {
-            subscription.learned_topic_numbers += 1;
-            await subscription.save();
-        }
+        
+        subscription.learned_topic_numbers += 1;
+        await subscription.save();
 
         res.status(200).json({
             message: 'Data generated successfully.',
@@ -183,20 +188,19 @@ async function topic_content(req, res, next) {
             success: true,
         });
     } catch (err) {
-        return next(createError(500, err.message || 'An error occurred while processing your request.'));
+        return next(err);
     }
 }
 
 async function topic_ask(req, res, next) {
     const { id } = req.params;
-
     if (!id) {
         return next(createError(400, 'Topic ID is required.'));
     }
 
     const permissionMsg = await hasStudentPermission(req.user.id, id);
     if (permissionMsg !== true) {
-        return next(createError(403, permissionMsg));
+        return next(createError(400, permissionMsg));
     }
 
     const { question } = req.body;
@@ -210,44 +214,48 @@ async function topic_ask(req, res, next) {
                 topicId: id,
                 question,
             },
-        }) || await Interactions.create({
-            userId: req.user.id,
-            topicId: id,
-            question,
         });
 
+        if (!interaction) {
+            interaction = await Interactions.create({
+                userId: req.user.id,
+                topicId: id,
+                question,
+            });
+        }
+
         if (interaction.response_file_path) {
-            const contents = await FileContents.findByPk(interaction.response_file_path);
+            const contents = fs.readFile(interaction.response_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Data fetched successfully.',
-                data: contents.content,
+                data: contents,
                 success: true,
             });
         }
 
         const topicDetail = await find_topics(id);
-        const historyFile = await FileContents.findByPk(topicDetail.topics.content_file_path);
+        const history = fs.readFile(topicDetail.topics.content_file_path, 'utf8');
         const context = {
             question,
-            history: historyFile.content,
+            history
         };
 
-        const generatedAnswer = await generateAnswer(question, context);
-        const file = await FileContents.create({
-            content: generatedAnswer,
-            interaction_id: interaction.id,
-        });
+        const generatedContent = await generateAnswer(question, context);
+        const dirPath = path.join(__dirname, `../public/Fields_${topicDetail.fields.id}/Courses_${topicDetail.courses.id}/Chapters_${topicDetail.chapters.id}/Topics_${topicDetail.topics.id}/Interactions`);
+        const filePath = path.join(dirPath, `Interactions_${interaction.id}.md`);
 
-        interaction.response_file_path = file.id;
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedContent);
+        interaction.response_file_path = filePath;
         await interaction.save();
 
         res.status(200).json({
             message: 'Data generated successfully.',
-            data: generatedAnswer,
+            data: generatedContent,
             success: true,
         });
     } catch (err) {
-        return next(createError(500, err.message || 'An error occurred while processing your request.'));
+        return next(err);
     }
 }
 
@@ -275,9 +283,9 @@ async function topic_current_interactions(req, res, next) {
             return next(createError(404, 'No interactions found for this user and topic.'));
         }
 
-        const fullInteractions = interactions.map(async (interaction) => {
-            const responseData = await FileContents.findByPk(interaction.response_file_path); // Read file content
-            return { ...interaction.toJSON(), response: responseData.content }; // Use toJSON() to get plain object
+        const fullInteractions = interactions.map(interaction => {
+            const responseData = fs.readFile(interaction.response_file_path, 'utf-8'); // Read file content
+            return { ...interaction.toJSON(), response: responseData }; // Use toJSON() to get plain object
         });
 
         // Response without response_file_path

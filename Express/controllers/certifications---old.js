@@ -1,39 +1,47 @@
-import { Courses, Fields, Users, Certifications, Results, FileContents } from "../models/index.js";
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+import { Courses, Fields, Users, Certifications, Results } from "../models/index.js";
 import { Op } from "sequelize";
 import { generateQuestion_By_OpenAI, generateQuestion_By_GoogleGenAI } from '../utilities/ai-service.js';
+import fs from 'fs/promises';
 import { createError } from '../utilities/error-handlers.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function certification_questions(req, res, next) {
     const { fieldId } = req.params;
-
     if (!fieldId) {
         return next(createError(400, 'Field ID is required.'));
     }
 
     try {
-        let certification = await Certifications.findOne({ where: { fieldId } }) || await Certifications.create({ fieldId });
+        let certification = await Certifications.findOne({ where: { fieldId } });
+        
+        if (!certification) {
+            certification = await Certifications.create({ fieldId });
+        }
 
         if (certification.questions_file_path) {
-            const questions = await FileContents.findByPk(certification.questions_file_path);
+            const questions = fs.readFile(certification.questions_file_path, 'utf8');
             return res.status(200).json({
                 message: 'Certification questions fetched successfully.',
-                data: JSON.parse(questions.content),
+                data: JSON.parse(questions),
                 success: true,
             });
         }
 
-        const [field, courses] = await Promise.all([
-            Fields.findByPk(fieldId),
-            Courses.findAll({ where: { fieldId } })
-        ]);
-
+        const field = await Fields.findByPk(fieldId);
+        const courses = await Courses.findAll({ where: { fieldId } });
         const generatedQuestions = await generateQuestion(field, JSON.stringify(courses));
-        const file = await FileContents.create({
-            content: generatedQuestions,
-            certification_id: certification.id
-        });
+        
+        const dirPath = path.join(__dirname, `../public/Fields_${fieldId}/Certifications`);
+        const filePath = path.join(dirPath, `Certifications_${certification.id}.json`);
 
-        certification.questions_file_path = file.id;
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, generatedQuestions);
+        
+        certification.questions_file_path = filePath;
         await certification.save();
 
         res.status(200).json({
@@ -97,7 +105,9 @@ async function certification_get_results(req, res, next) {
 }
 
 async function certification_get_by_id(req, res, next) {
-    try {        
+    try {
+        console.log(`\n\n\n\n\n\n00000000000000\n\n\n\n\n\n\n\n\n`);
+        
         const { resultId } = req.params;
 
         if (!resultId) {

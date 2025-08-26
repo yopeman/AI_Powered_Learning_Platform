@@ -55,7 +55,7 @@ const TopicScreen = ({ navigation, route }) => {
       const interactionResponse = await get_topic_interactions(topicId);
       setInteractions(interactionResponse?.data);
     } catch (err) {
-      setError(err.response?.data?.message || err.message);
+      // setError(err.response?.data?.message || err.message);
     }
   };
 

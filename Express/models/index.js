@@ -12,6 +12,7 @@ import Amounts from './amounts.js';
 import Feedbacks from './feedbacks.js';
 import Certifications from './certifications.js';
 import Results from './results.js';
+import FileContents from './file_contents.js'
 import bcrypt from 'bcrypt';
 
 (async () => {
@@ -30,6 +31,7 @@ import bcrypt from 'bcrypt';
     await Feedbacks.sync();
     await Amounts.sync();
     await Payments.sync();
+    await FileContents.sync();
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
     
     const adminUser = await Users.findOne({ where: { role: 'admin' } });
@@ -66,5 +68,6 @@ export {
     Amounts,
     Feedbacks,
     Certifications,
-    Results
+    Results,
+    FileContents
 };
