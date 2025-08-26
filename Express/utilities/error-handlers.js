@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 
 function handler(req, res, next) {
     const error = new Error('Page Not Found');
@@ -8,7 +8,7 @@ function handler(req, res, next) {
 
 function error_handler(err, req, res, next) {
     console.error(err, err.response);
-    fs.writeFileSync('/tmp/error.log', `${new Date().toISOString()} - ${err.message} - ${err.stack}\n\n`, { flag: 'a' });
+    fs.writeFile('/tmp/error.log', `${new Date().toISOString()} - ${err.message} - ${err.stack}\n\n`, { flag: 'a' });
 
     res.status(err.status || 500).json({
         message: err.message || 'Internal Server Error',
