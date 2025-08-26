@@ -83,9 +83,9 @@ const ChapterScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.topicContent}>
             <Text style={styles.topicTitle}>{topic.title}</Text>
-            <View style={styles.durationBadge}>
+            {/* <View style={styles.durationBadge}>
               <Text style={styles.durationText}>15 min read</Text>
-            </View>
+            </View> */}
           </View>
           <MaterialCommunityIcons 
             name="chevron-right" 
