@@ -7,6 +7,7 @@ import { get_chapter_by_id, get_topics } from '../Utilities/operations';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/ChapterStyle";
+import {StatusBar} from "expo-status-bar";
 
 const ChapterScreen = ({ navigation, route }) => {
   const { chapterId } = route.params;
@@ -15,7 +16,7 @@ const ChapterScreen = ({ navigation, route }) => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -46,17 +47,20 @@ const ChapterScreen = ({ navigation, route }) => {
     fetchData();
   }, [chapterId]);
 
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
+
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );

@@ -191,6 +191,7 @@ function MainDrawer() {
         component={LearningNavigator}
         options={{
           drawerLabel: 'Learning',
+          title: 'Learning',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="book-open-page-variant" size={size} color={color} />
           ),
@@ -218,6 +219,7 @@ function MainDrawer() {
         component={SettingScreen}
         options={{
           drawerLabel: 'Settings',
+          title: 'Settings',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="settings" size={size} color={color} />
           ),
@@ -245,6 +247,7 @@ function MainDrawer() {
         component={PaymentScreen}
         options={{
           drawerLabel: 'Payment',
+          title: 'Payment',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="payments" size={size} color={color} />
           ),
@@ -272,6 +275,7 @@ function MainDrawer() {
         component={AboutScreen}
         options={{
           drawerLabel: 'About Us',
+          title: 'About Us',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="info" size={size} color={color} />
           ),

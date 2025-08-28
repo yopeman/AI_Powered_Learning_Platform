@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import rate_limit from 'express-rate-limit'
 import routes from './routers/index.js';
 import auth_routes from './routers/auths.js';
 import { handler, error_handler } from './utilities/error-handlers.js';
@@ -21,6 +22,11 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(helmet());
+app.use(rate_limit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests, please try again later.'
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
@@ -57,15 +63,6 @@ app.use((req, res) => {
 // Error handling middleware
 app.use(handler);
 app.use(error_handler);
-
-// // Sync the database and start the server
-// sequelize.sync().then(() => {
-//     const PORT = process.env.PORT || 7000;
-//     app.listen(PORT, (err) => {
-//         if (err) console.error(err);
-//         console.log(`Server running at http://127.0.0.1:${PORT}`);
-//     });
-// }).catch(err => console.error(err));
 
 if (process.env.NODE_ENV !== 'vercel') {
   sequelize.sync().then(() => {

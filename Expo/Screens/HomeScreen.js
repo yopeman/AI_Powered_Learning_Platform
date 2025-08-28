@@ -56,7 +56,9 @@ const HomeScreen = ({ navigation }) => {
         });
         setProgressData(progress);
       } catch (err) {
-        setError(err.response?.data?.message || err.message);
+        if (err.status !== 404) {
+          setError(err.response?.data?.message || err.message); 
+        }
       } finally {
         setLoading(false);
       }
@@ -84,7 +86,8 @@ const HomeScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );

@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from '../Utilities/api';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/AboutStyle";
+import {StatusBar} from "expo-status-bar";
 
 export default function About() {
   const [content, setContent] = useState('');
@@ -15,7 +16,7 @@ export default function About() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -48,7 +49,15 @@ export default function About() {
     setSuccess('');
   };
 
-  if (loading) return <ActivityIndicator size="large" color={colors.primary} />;
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
 
   return (
     <ScrollView style={styles.container}>

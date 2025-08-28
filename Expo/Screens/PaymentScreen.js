@@ -10,6 +10,7 @@ import CustomAlert from "../Components/CustomAlert";
 import { MaterialIcons } from '@expo/vector-icons';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/PaymentStyle";
+import {StatusBar} from "expo-status-bar";
 
 export default function PaymentScreen({ navigation }) {
   const [error, setError] = useState(null);
@@ -18,7 +19,7 @@ export default function PaymentScreen({ navigation }) {
   const [formData, setFormData] = useState({ fieldId: '', year: 1, semester: 1 });
   const [modalVisible, setModalVisible] = useState(false);
   const [payment, setPayment] = useState({});
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -88,6 +89,7 @@ export default function PaymentScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -95,7 +97,7 @@ export default function PaymentScreen({ navigation }) {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );

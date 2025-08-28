@@ -112,5 +112,11 @@ export const createStyles = (colors, textSize) => {
       fontWeight: '600',
       marginLeft: 8,
     },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
   });
 }

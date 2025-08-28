@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/RegisterStyle";
 import {AuthContext} from "../Utilities/AuthContext";
+import {StatusBar} from "expo-status-bar";
 
 export default function RegisterScreen({ setIsAuth }) {
   const navigation = useNavigation();
@@ -33,7 +34,7 @@ export default function RegisterScreen({ setIsAuth }) {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
   const { isAuthenticated, signIn } = useContext(AuthContext);
 
@@ -102,6 +103,15 @@ export default function RegisterScreen({ setIsAuth }) {
     // { name: 'password', label: 'Password', icon: 'lock' },
     // { name: 'confirm_password', label: 'Confirm Password', icon: 'lock' },
   ];
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

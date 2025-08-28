@@ -8,6 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from "../Utilities/ThemeContext";
 import { createStyles } from "../Style/FieldStyle";
 import { useNavigation } from "@react-navigation/native";
+import {StatusBar} from "expo-status-bar";
 
 const FieldScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -25,7 +26,7 @@ const FieldScreen = ({ route }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { colors, textSize } = useTheme();
+  const { colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const FieldScreen = ({ route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -75,7 +77,7 @@ const FieldScreen = ({ route }) => {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );

@@ -9,6 +9,7 @@ import Markdown from 'react-native-markdown-display';
 import * as Speech from 'expo-speech';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/TopicStyle";
+import {StatusBar} from "expo-status-bar";
 
 const TopicScreen = ({ navigation, route }) => {
   const { topicId } = route.params;
@@ -20,7 +21,7 @@ const TopicScreen = ({ navigation, route }) => {
   const [ask, setAsk] = useState('');
   const [sending, setSending] = useState(false);
   const [playingIndex, setPlayingIndex] = useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -79,6 +80,7 @@ const TopicScreen = ({ navigation, route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -86,7 +88,7 @@ const TopicScreen = ({ navigation, route }) => {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );

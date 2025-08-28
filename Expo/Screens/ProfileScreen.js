@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api } from '../Utilities/api';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/ProfileStyle";
+import {StatusBar} from "expo-status-bar";
 
 export default function ProfileScreen() {
   const { signOut } = useContext(AuthContext);
@@ -30,7 +31,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [initialValue, setInitialValue] = useState(null);
   const [token, setToken] = useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -91,6 +92,15 @@ export default function ProfileScreen() {
       console.error('Error during logout', err);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

@@ -7,13 +7,14 @@ import { get_all_fields, subscribe_field } from "../Utilities/operations";
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/SubscriptionStyle";
 import {useFocusEffect} from "@react-navigation/native";
+import {StatusBar} from "expo-status-bar";
 
 const SubscriptionScreen = ({ navigation }) => {
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
   const [refreshing, setRefreshing] = useState(false);
 
@@ -73,6 +74,7 @@ const SubscriptionScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );

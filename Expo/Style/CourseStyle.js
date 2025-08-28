@@ -12,6 +12,7 @@ export const createStyles = (colors, textSize) => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.background,
     },
     errorContainer: {
       flex: 1,

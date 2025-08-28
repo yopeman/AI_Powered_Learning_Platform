@@ -11,13 +11,14 @@ import { APP_ID } from "../Utilities/operations";
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/LoginStyle";
 import {AuthContext} from "../Utilities/AuthContext";
+import {StatusBar} from "expo-status-bar";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({email: '', password: APP_ID()});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({text: '', type: ''});
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
   const { isAuthenticated, signIn } = useContext(AuthContext);
 
@@ -63,6 +64,15 @@ export default function LoginScreen() {
     setFormData({email: '', password: APP_ID()});
     setMessage({text: '', type: ''});
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

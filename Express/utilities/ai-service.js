@@ -7,8 +7,6 @@ const generateContent = async (source, topicTitle, context) => {
         Context: 
         - Field: ${context.field}
         - Course: ${context.course}
-        - Year: ${context.year}
-        - Semester: ${context.semester}
         Format: Markdown with headings, examples, and quizzes
     `;
 

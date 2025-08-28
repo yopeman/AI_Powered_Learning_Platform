@@ -12,6 +12,7 @@ import CustomAlert from "../Components/CustomAlert";
 import { RadioButton, Provider as PaperProvider } from 'react-native-paper';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/CertificateStyle";
+import {StatusBar} from "expo-status-bar";
 
 const CertificateScreen = ({ navigation, route }) => {
   const { fieldId } = route.params;
@@ -24,7 +25,7 @@ const CertificateScreen = ({ navigation, route }) => {
   const [answers, setAnswers] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -100,13 +101,20 @@ const CertificateScreen = ({ navigation, route }) => {
     return <Text style={styles.scoreSuccessText}> Congratulations, you passed the exam. Now you can get your certificates!</Text>;
   };
 
+
   if (loading) {
-    return <ActivityIndicator size="large" color={colors.primary} />;
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
   }
+
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
         <Button title='Retry' onPress={handleRetry} />
       </View>

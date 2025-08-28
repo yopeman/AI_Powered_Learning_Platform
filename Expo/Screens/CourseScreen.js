@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { get_chapters, get_course_by_id } from '../Utilities/operations';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/CourseStyle";
+import {StatusBar} from "expo-status-bar";
 
 export default function CourseScreen({ navigation, route }) {
   const { courseId } = route.params;
@@ -14,7 +15,7 @@ export default function CourseScreen({ navigation, route }) {
   const [chapters, setChapters] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
-  const {colors, textSize} = useTheme();
+  const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function CourseScreen({ navigation, route }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <StatusBar style={`${darkMode ? 'light' : 'dark'}`} />
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -56,7 +58,7 @@ export default function CourseScreen({ navigation, route }) {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
