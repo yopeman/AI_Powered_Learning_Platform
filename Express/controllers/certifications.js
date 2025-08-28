@@ -154,7 +154,7 @@ async function get_my_certificate_doc(req, res, next) {
             return next(createError(404, 'Field not found.'));
         }
 
-        const user = await Users.findByPk(userId); // Corrected to use userId
+        const user = await Users.findByPk(userId);
         if (!user) {
             return next(createError(404, 'User not found.'));
         }
@@ -195,7 +195,7 @@ async function redirect_certification_doc(req, res, next) {
 async function generateQuestion(field, courses) {
     // Uncomment the appropriate AI generation method
     // return await generateQuestion_By_OpenAI(field, courses);
-    // return await generateQuestion_By_GoogleGenAI(field, courses);
+    return await generateQuestion_By_GoogleGenAI(field, courses);
     return `
 [
     {
