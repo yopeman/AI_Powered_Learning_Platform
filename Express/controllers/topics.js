@@ -202,6 +202,7 @@ async function topic_ask(req, res, next) {
     }
 
     const { question } = req.body;
+
     if (!question) {
         return next(createError(400, 'Question is required.'));
     }
@@ -212,17 +213,21 @@ async function topic_ask(req, res, next) {
                 topicId: id,
                 question,
             },
-        }) || await Interactions.create({
-            userId: req.user.id,
-            topicId: id,
-            question,
         });
+
+        if (!interaction) {
+            interaction = await Interactions.create({
+                userId: req.user.id,
+                topicId: id,
+                question,
+            });
+        }
 
         if (interaction.response_file_path) {
             const contents = await FileContents.findByPk(interaction.response_file_path);
             return res.status(200).json({
                 message: 'Data fetched successfully.',
-                data: contents.content,
+                data: contents?.content || null,
                 success: true,
             });
         }
@@ -230,21 +235,23 @@ async function topic_ask(req, res, next) {
         const prev_questions_history = await Interactions.findAll({
             where: {
                 topicId: id,
-                userId: req.user.id
-            }
+                userId: req.user.id,
+            },
         });
-        
-        const prev_questions = await Promise.all(prev_questions_history.map(async (qtion) => {
-            const responseData = await FileContents.findByPk(qtion.response_file_path);
-            return responseData.content || null;
-        }));
+
+        const prev_questions = await Promise.all(
+            prev_questions_history.map(async (qtion) => {
+                const responseData = await FileContents.findByPk(qtion.response_file_path);
+                return responseData?.content || null;
+            })
+        );
 
         const topicDetail = await find_topics(id);
         const historyFile = await FileContents.findByPk(topicDetail.topics.content_file_path);
         const context = {
             question,
-            history: historyFile.content,
-            prev_questions: JSON.stringify(prev_questions)
+            history: historyFile?.content || '',
+            prev_questions: JSON.stringify(prev_questions),
         };
 
         const generatedAnswer = await generateAnswer(context);
@@ -262,7 +269,7 @@ async function topic_ask(req, res, next) {
             success: true,
         });
     } catch (err) {
-        return next(createError(500, err.message || 'An error occurred while processing your request.'));
+        return next(err);
     }
 }
 
