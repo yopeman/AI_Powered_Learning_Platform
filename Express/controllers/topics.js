@@ -227,11 +227,24 @@ async function topic_ask(req, res, next) {
             });
         }
 
+        const prev_questions_history = await Interactions.findAll({
+            where: {
+                topicId: id,
+                userId: req.user.id
+            }
+        });
+        
+        const prev_questions = await Promise.all(prev_questions_history.map(async (qtion) => {
+            const responseData = await FileContents.findByPk(qtion.response_file_path);
+            return responseData.content || null;
+        }));
+
         const topicDetail = await find_topics(id);
         const historyFile = await FileContents.findByPk(topicDetail.topics.content_file_path);
         const context = {
             question,
             history: historyFile.content,
+            prev_questions: JSON.stringify(prev_questions)
         };
 
         const generatedAnswer = await generateAnswer(context);
