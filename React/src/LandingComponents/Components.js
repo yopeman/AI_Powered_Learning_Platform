@@ -493,7 +493,7 @@ export default function Components() {
 
         {/* Floating Download Button */}
         <a
-            href="https://expo.dev/artifacts/eas/hvSqpKfTPYcubMc6myrXge.apk"
+            href="https://expo.dev/artifacts/eas/7Vnc9p5urNyYkWPi3jtRdW.apk"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 z-40 flex items-center"

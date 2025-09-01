@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AiPLP",
-    "slug": "AI-Powered-Learning-Platform",
+    "slug": "aiplp-by-yopeai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,8 +28,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a8458dc9-4cba-4046-91e6-ac1f74a747f9"
+        "projectId": "4e70831b-558e-4c18-a2cc-c3cbc950e559"
       }
-    }
+    },
+    "owner": "ha-refer"
   }
 }
