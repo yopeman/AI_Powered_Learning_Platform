@@ -23,26 +23,26 @@ const handleResponse = (response) => {
 const generatePrompt = (context, type) => {
     if (type === 'content') {
         return `
-            Generate comprehensive learning material about: ${context.topic}
+            Generate detailed learning material on the following topic: ${context.topic}
             Context:
             - Field: ${context.field}
             - Course: ${context.course}
             - Chapter: ${context.chapter}
             - Topic: ${context.topic}
-            Format: Markdown with headings, examples, and quizzes
+            Format: Markdown with headings, examples, and quizzes.
         `;
     } else if (type === 'answer') {
         return `
-            You are a smart tutor. Answer the following question in Markdown format.
+            You are a knowledgeable tutor. Please answer the question below in Markdown format.
             Question: ${context.question}
-            Context: ${context.history || 'None'}
-            Previous Question: ${context.prev_questions || 'None'}
-            Requirements: - Use Markdown format - Include headings, examples, and a short quiz at the end
+            Context: ${context.history || 'No previous context'}
+            Previous Questions: ${context.prev_questions || 'None'}
+            Requirements: - Use Markdown format - Include headings, examples, and a short quiz at the end.
         `;
     } else if (type === 'question') {
         return `
-            Generate 30 quiz questions for "${context.field.title}" field. The field includes the following courses: ${JSON.stringify(context.courses)}. 
-            Each question should have 4 options (A, B, C, D) and must be formatted as JSON like:
+            Generate 30 quiz questions for the "${context.field.title}" field, which includes the following courses: ${JSON.stringify(context.courses)}. 
+            Each question should have 4 answer options (A, B, C, D) and be formatted as JSON, like this:
             [
                 {
                     "question": "Question text",
@@ -57,7 +57,7 @@ const generatePrompt = (context, type) => {
 const fetchResponse = async (client, source, prompt) => {
     return source === 'OpenAI'
         ? client.chat.completions.create({ model: 'gpt-4o', messages: [{ role: 'user', content: prompt }] })
-        : client.models.generateContent({ model: 'gemini-2.5-flash-lite', contents: prompt });
+        : client.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt }); // gemini-2.5-flash-lite
 };
 
 const generateContent = async (source, context) => {
