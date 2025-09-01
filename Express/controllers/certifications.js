@@ -17,9 +17,9 @@ async function certification_questions(req, res, next) {
             const questions = await FileContents.findByPk(certification.questions_file_path);
 
             const jsonString = questions.content
-                .replace(/```json/, '') // Remove the '```json\n' prefix
-                .replace(/```$/, '') // Remove the trailing '```'
-                .trim(); // Trim whitespace
+                .replace(/```json/, '')
+                .replace(/```$/, '')
+                .trim();
             console.log(JSON.parse(jsonString));
             
 
