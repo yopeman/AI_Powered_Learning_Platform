@@ -15,9 +15,17 @@ async function certification_questions(req, res, next) {
 
         if (certification.questions_file_path) {
             const questions = await FileContents.findByPk(certification.questions_file_path);
+
+            const jsonString = questions.content
+                .replace(/```json/, '') // Remove the '```json\n' prefix
+                .replace(/```$/, '') // Remove the trailing '```'
+                .trim(); // Trim whitespace
+            console.log(JSON.parse(jsonString));
+            
+
             return res.status(200).json({
                 message: 'Certification questions fetched successfully.',
-                data: JSON.parse(questions.content),
+                data: JSON.parse(jsonString),
                 success: true,
             });
         }
