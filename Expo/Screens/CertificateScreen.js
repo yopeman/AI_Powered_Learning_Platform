@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View, Text, ScrollView, ActivityIndicator,
   StyleSheet, Button, Linking, TouchableOpacity, Alert
@@ -13,6 +13,7 @@ import { RadioButton, Provider as PaperProvider } from 'react-native-paper';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/CertificateStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 const CertificateScreen = ({ navigation, route }) => {
   const { fieldId } = route.params;
@@ -27,10 +28,20 @@ const CertificateScreen = ({ navigation, route }) => {
   const [score, setScore] = useState(null);
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,14 +61,14 @@ const CertificateScreen = ({ navigation, route }) => {
           setAnswers(Array(response.data.length).fill(null));
         }
       } catch (err) {
-        setError('Failed to load data.');
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [fieldId, submitted]);
+  }, [fieldId, submitted, refreshing]);
 
   const handleRetry = () => {
     setError(null);
@@ -87,8 +98,14 @@ const CertificateScreen = ({ navigation, route }) => {
       await submit_certification_answer_results(fieldId, calculatedScore);
       setScore(calculatedScore);
       setSubmitted(true);
+      
+      const link = await get_certification_document(fieldId);
+      if (link) {
+        setDocLink(link);
+        setModalVisible(true);
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
     }
@@ -116,7 +133,7 @@ const CertificateScreen = ({ navigation, route }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>{error}</Text>
-        <Button title='Retry' onPress={handleRetry} />
+        <TouchableOpacity style={styles.button} onPress={handleRetry}>Retry</TouchableOpacity>
       </View>
     );
   }

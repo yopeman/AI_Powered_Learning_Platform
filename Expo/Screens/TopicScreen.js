@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   ActivityIndicator, ScrollView, StyleSheet, Keyboard
@@ -10,6 +10,7 @@ import * as Speech from 'expo-speech';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/TopicStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 const TopicScreen = ({ navigation, route }) => {
   const { topicId } = route.params;
@@ -23,12 +24,21 @@ const TopicScreen = ({ navigation, route }) => {
   const [playingIndex, setPlayingIndex] = useState(null);
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
 
-  // Fetch topic content
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
+
   useEffect(() => {
     const fetchContent = async () => {
       setLoading(true);
@@ -48,9 +58,8 @@ const TopicScreen = ({ navigation, route }) => {
     };
 
     fetchContent();
-  }, [topicId]);
+  }, [topicId, refreshing]);
 
-  // Fetch interactions
   const fetchInteractions = async () => {
     try {
       const interactionResponse = await get_topic_interactions(topicId);

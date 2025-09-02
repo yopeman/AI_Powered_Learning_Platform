@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View, Text, TouchableOpacity,
   ActivityIndicator, ScrollView
@@ -9,13 +9,13 @@ import { useTheme } from "../Utilities/ThemeContext";
 import { createStyles } from "../Style/FieldStyle";
 import { useNavigation } from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 const FieldScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const { fieldId } = route?.params || {};
 
-  // Check for missing fieldId and navigate if necessary
   useEffect(() => {
     if (!fieldId) {
       navigation.goBack();
@@ -28,10 +28,20 @@ const FieldScreen = ({ route }) => {
   const [error, setError] = useState(null);
   const { colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
-  }, [colors, textSize]);
+  }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +67,7 @@ const FieldScreen = ({ route }) => {
       }
     };
     fetchData();
-  }, [fieldId]); // Add fieldId as a dependency
+  }, [fieldId, refreshing]);
 
   const maxYearLength = Math.max(...courses.map(c => c.year), 0);
   const maxSemesterLength = Math.max(...courses.map(c => c.semester), 0);

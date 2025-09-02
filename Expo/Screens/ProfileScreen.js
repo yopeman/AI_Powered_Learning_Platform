@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import { api } from '../Utilities/api';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/ProfileStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 export default function ProfileScreen() {
   const { signOut } = useContext(AuthContext);
@@ -33,24 +34,34 @@ export default function ProfileScreen() {
   const [token, setToken] = useState(null);
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
       const response = await AsyncStorage.getItem('response');
       if (response) {
         const userData = JSON.parse(response).user;
-        delete userData.password; // Remove password from user data
+        delete userData.password;
         setInitialValue({ ...userData });
         setFormData({ ...userData });
         setToken(JSON.parse(response).token);
       }
     };
     fetchUserData();
-  }, []);
+  }, [refreshing]);
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -59,6 +70,7 @@ export default function ProfileScreen() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      const newResponse = { user: formData, token }
       const response = await api(token).put('/users/me', formData);
       if (!response) {
         setMessage({ text: 'Update failed', type: 'error' });
@@ -68,7 +80,7 @@ export default function ProfileScreen() {
 
       if (success) {
         setMessage({ text: 'Update successful!', type: 'success' });
-        await AsyncStorage.setItem('response', JSON.stringify(formData));
+        await AsyncStorage.setItem('response', JSON.stringify(newResponse));
       } else {
         setMessage({ text: responseMessage, type: 'error' });
       }
@@ -89,7 +101,8 @@ export default function ProfileScreen() {
       await AsyncStorage.clear();
       signOut();
     } catch (err) {
-      console.error('Error during logout', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Error during logout';
+      setMessage({ text: errorMessage, type: 'error' });
     }
   };
 

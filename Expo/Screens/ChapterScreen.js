@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { 
   View, Text, TouchableOpacity, 
   ActivityIndicator, ScrollView, StyleSheet 
@@ -8,6 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/ChapterStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 const ChapterScreen = ({ navigation, route }) => {
   const { chapterId } = route.params;
@@ -18,10 +19,20 @@ const ChapterScreen = ({ navigation, route }) => {
   const [error, setError] = useState(null);
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +56,7 @@ const ChapterScreen = ({ navigation, route }) => {
       }
     };
     fetchData();
-  }, [chapterId]);
+  }, [chapterId, refreshing]);
 
 
   if (loading) {

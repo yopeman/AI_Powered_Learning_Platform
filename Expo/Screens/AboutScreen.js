@@ -34,9 +34,9 @@ export default function About() {
       }
       setSuccess(response.data.message);
       setContent('');
-      setRating(3); // Reset to default rating
+      setRating(3);
     } catch (err) {
-      setError(err.response?.data?.message || 'Feedback submission failed');
+      setError(err.response?.data?.message || err.message || 'Feedback submission failed');
     } finally {
       setLoading(false);
     }

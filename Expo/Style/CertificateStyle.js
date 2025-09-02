@@ -33,6 +33,7 @@ export const createStyles = (colors, textSize) => {
     result: {
       marginTop: 20,
       fontSize: textSize + 4,
+      color: colors.text
     },
     errorContainer: {
       padding: 20,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { 
   View, Text, Button, ActivityIndicator, 
   ScrollView, StyleSheet, TouchableOpacity,
@@ -11,6 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/PaymentStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 export default function PaymentScreen({ navigation }) {
   const [error, setError] = useState(null);
@@ -21,10 +22,20 @@ export default function PaymentScreen({ navigation }) {
   const [payment, setPayment] = useState({});
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchMyFields = async () => {
@@ -53,7 +64,7 @@ export default function PaymentScreen({ navigation }) {
     };
 
     fetchMyFields();
-  }, []);
+  }, [refreshing]);
 
   const handleFieldChange = (fieldId) => {
     setFormData((prevData) => ({ ...prevData, fieldId }));
@@ -95,20 +106,13 @@ export default function PaymentScreen({ navigation }) {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
-
   const selectedField = fields.find(field => field.id === formData.fieldId);
   const yearsLength = selectedField ? selectedField.years_length : 0;
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Payment</Text>
+      {error && <Text style={styles.errorText}>{error}</Text>}
 
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Select Field</Text>
@@ -143,7 +147,7 @@ export default function PaymentScreen({ navigation }) {
               onValueChange={handleSemesterChange}
               style={styles.picker}
             >
-              {Array.from({ length: 5 }, (_, i) => (
+              {Array.from({ length: 2 /* 5 */ }, (_, i) => (
                 <Picker.Item key={i + 1} label={`Semester - ${i + 1}`} value={i + 1} />
               ))}
             </Picker>

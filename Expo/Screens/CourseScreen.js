@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { 
   View, Text, TouchableOpacity, 
   ActivityIndicator, ScrollView, StyleSheet 
@@ -8,6 +8,7 @@ import { get_chapters, get_course_by_id } from '../Utilities/operations';
 import {useTheme} from "../Utilities/ThemeContext";
 import {createStyles} from "../Style/CourseStyle";
 import {StatusBar} from "expo-status-bar";
+import {useFocusEffect} from "@react-navigation/native";
 
 export default function CourseScreen({ navigation, route }) {
   const { courseId } = route.params;
@@ -17,10 +18,20 @@ export default function CourseScreen({ navigation, route }) {
   const [error, setError] = React.useState(null);
   const {colors, textSize, darkMode} = useTheme();
   const [styles, setStyles] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setStyles(createStyles(colors, textSize));
   }, [colors, textSize, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      return () => {
+        setRefreshing(false);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchCourseAndChapters = async () => {
@@ -45,7 +56,7 @@ export default function CourseScreen({ navigation, route }) {
     };
 
     fetchCourseAndChapters();
-  }, [courseId]);
+  }, [courseId, refreshing]);
 
   if (loading) {
     return (

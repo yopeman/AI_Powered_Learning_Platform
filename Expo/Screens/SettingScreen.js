@@ -17,7 +17,6 @@ export default function SettingScreen() {
     setCurrentSize(size);
   }, [colors, textSize, mode, size]);
 
-
   const textSizeOptions = [
     { label: 'Small', value: 'small', v: 14 },
     { label: 'Medium', value: 'medium', v: 16 },
