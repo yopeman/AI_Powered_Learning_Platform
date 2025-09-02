@@ -81,6 +81,7 @@ export default function ProfileScreen() {
       if (success) {
         setMessage({ text: 'Update successful!', type: 'success' });
         await AsyncStorage.setItem('response', JSON.stringify(newResponse));
+        setInitialValue({ ...formData });
       } else {
         setMessage({ text: responseMessage, type: 'error' });
       }
