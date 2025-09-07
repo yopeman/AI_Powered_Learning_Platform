@@ -147,7 +147,7 @@ export default function PaymentScreen({ navigation }) {
               onValueChange={handleSemesterChange}
               style={styles.picker}
             >
-              {Array.from({ length: 2 /* 5 */ }, (_, i) => (
+              {Array.from({ length: 5 }, (_, i) => (
                 <Picker.Item key={i + 1} label={`Semester - ${i + 1}`} value={i + 1} />
               ))}
             </Picker>

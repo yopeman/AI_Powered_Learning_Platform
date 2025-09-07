@@ -12,7 +12,7 @@ import {useFocusEffect} from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
   const [fields, setFields] = useState([]);
-  const [subscriptions, setSubscriptions] = useState(null);
+  const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [progressData, setProgressData] = useState({});
@@ -46,14 +46,15 @@ const HomeScreen = ({ navigation }) => {
         setFields(response.data.fields);
         setSubscriptions(response.data.subscriptions);
         
-        // Simulate progress data - in a real app, this would come from the API
+        // Build progress data for each field
         const progress = {};
         response.data.fields.forEach(field => {
+          const sub = response.data.subscriptions.find(sub => sub.fieldId === field.id);
           progress[field.id] = {
-            completed: Math.floor(Math.random() * field.number_of_free_topics),
-            total: field.number_of_free_topics
+            completed: sub?.learned_topic_numbers ?? 0,
+            total: field.number_of_free_topics ?? 1
           };
-        });
+        });  
         setProgressData(progress);
       } catch (err) {
         if (err.status !== 404) {

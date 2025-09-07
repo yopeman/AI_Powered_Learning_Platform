@@ -141,48 +141,54 @@ async function topic_content(req, res, next) {
             return next(createError(404, 'Topic not found.'));
         }
 
+        let content;
+        // Try to fetch existing content
         if (topic.content_file_path) {
-            const contents = await FileContents.findByPk(topic.content_file_path);
-            return res.status(200).json({
-                message: 'Data fetched successfully.',
-                data: contents.content,
-                success: true,
+            const fileContent = await FileContents.findByPk(topic.content_file_path);
+            if (fileContent && fileContent.content) {
+                content = fileContent.content;
+            }
+        }
+
+        // If no content, generate and save it
+        if (!content) {
+            const topicDetail = await find_topics(id);
+            const context = {
+                field: topicDetail.fields?.title,
+                course: topicDetail.courses?.title,
+                chapter: topicDetail.chapters?.title,
+                topic: topicDetail.topics?.title
+            };
+
+            content = await generateContent(context);
+            const file = await FileContents.create({
+                content,
+                topicId: topic.id
             });
+
+            topic.content_file_path = file.id;
+            await topic.save();
         }
 
         const topicDetail = await find_topics(id);
-        const context = {
-            field: topicDetail.fields.title,
-            course: topicDetail.courses.title,
-            chapter: topicDetail.chapters.title,
-            topic: topicDetail.topics.title
-        };
-
-        const generatedContent = await generateContent(context);
-        const file = await FileContents.create({
-            content: generatedContent,
-            topicId: topic.id
-        });
-
-        topic.content_file_path = file.id;
-        await topic.save();
-
         const subscription = await Subscriptions.findOne({
             where: {
                 userId: req.user.id,
-                fieldId: topicDetail.fields.id
+                fieldId: topicDetail.fields?.id
             }
         });
 
-        if (subscription) {
-            subscription.learned_topic_numbers += 1;
-            await subscription.save();
+        if (!subscription) {
+            return next(createError(404, 'Subscription not found.'));
         }
 
+        subscription.learned_topic_numbers = (subscription.learned_topic_numbers || 0) + 1;
+        await subscription.save();
+        
         res.status(200).json({
-            message: 'Data generated successfully.',
-            data: generatedContent,
-            success: true,
+            message: 'Topic content fetched successfully.',
+            data: content,
+            success: true
         });
     } catch (err) {
         return next(createError(500, err.message || 'An error occurred while processing your request.'));
