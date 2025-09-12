@@ -8,7 +8,7 @@ async function isAuth(req, res, next) {
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-        return next(createError(res, 401, 'No Authorization Header'));
+        return next(createError(401, 'No Authorization Header'));
     }
 
     try {
