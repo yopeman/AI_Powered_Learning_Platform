@@ -60,10 +60,10 @@ async function payment_create(req, res, next) {
         const paymentInit = await axios.post('https://api.chapa.co/v1/transaction/initialize', {
             amount: amount.amount,
             currency: 'ETB',
-            email: user.email,
+            // email: user.email,
             first_name: user.first_name,
             last_name: user.last_name,
-            phone_number: user.phone,
+            // phone_number: user.phone,
             tx_ref: paymentId,
             callback_url: `${process.env.DOMAIN}/payments/webhook`,
         }, {

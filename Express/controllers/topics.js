@@ -79,8 +79,9 @@ async function topic_update(req, res, next) {
     }
 
     try {
-        await FileContents.destroy({ where: { topicId: id } });
-        req.body.content_file_path = null;
+        // // Delete the Topic content when update the topic's
+        // await FileContents.destroy({ where: { topicId: id } });
+        // req.body.content_file_path = null;
         const [updated] = await Topics.update(req.body, { where: { id } });
 
         if (!updated) {
