@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { Courses, Fields, Subscriptions, Users } from '../models/index.js';
 import { createError } from '../utilities/error-handlers.js';
 
@@ -8,6 +9,11 @@ async function field_get(req, res, next) {
         // Adjust query based on user role
         if (req.user.role === 'student') {
             whereClose.status = 'active';
+
+            const subscriptions = await Subscriptions.findAll({ where: { userId: req.user.id } });
+            const fieldIds = subscriptions.map(s => s.fieldId);
+            console.log(fieldIds);
+            whereClose.id = { [Op.notIn]: fieldIds }
         }
 
         const allFields = await Fields.findAll({ where: whereClose });
