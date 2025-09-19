@@ -55,6 +55,7 @@ app.use('/results/:resultId/link', redirect_certification_doc);
 app.use('/api/v1/', isAuth, routes);
 
 // Serve static files
+app.use('/download', express.static(path.join(__dirname, 'download')));
 app.use(express.static(path.join(__dirname, 'static')));
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'static', 'index.html'));
