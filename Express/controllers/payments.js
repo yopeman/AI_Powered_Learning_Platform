@@ -71,10 +71,7 @@ async function payment_create(req, res, next) {
                 'Authorization': `Bearer ${process.env.CHAPA_SECRET}`,
                 'Content-Type': 'application/json'
             }
-        });
-
-        console.log(paymentInit.data);
-        
+        });        
 
         if (paymentInit.data.status !== 'success') {
             return next(createError(500, 'Payment initialization failed.'));

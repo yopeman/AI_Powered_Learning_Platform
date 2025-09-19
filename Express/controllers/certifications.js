@@ -19,9 +19,7 @@ async function certification_questions(req, res, next) {
             const jsonString = questions.content
                 .replace(/```json/, '')
                 .replace(/```$/, '')
-                .trim();
-            console.log(JSON.parse(jsonString));
-            
+                .trim();            
 
             return res.status(200).json({
                 message: 'Certification questions fetched successfully.',

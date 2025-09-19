@@ -106,8 +106,6 @@ async function certification_get_results(req, res, next) {
 
 async function certification_get_by_id(req, res, next) {
     try {
-        console.log(`\n\n\n\n\n\n00000000000000\n\n\n\n\n\n\n\n\n`);
-        
         const { resultId } = req.params;
 
         if (!resultId) {

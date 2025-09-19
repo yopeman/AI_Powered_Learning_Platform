@@ -32,7 +32,7 @@ async function course_chapter(req, res, next) {
     }
 
     try {
-        const chapters = await Chapters.findAll({ where: { courseId } });
+        const chapters = await Chapters.findAll({ where: { courseId }, order: [['createdAt', 'ASC']]  });
 
         if (!chapters.length) {
             return next(createError(404, 'No chapters found for this course.'));

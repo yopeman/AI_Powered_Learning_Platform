@@ -12,11 +12,10 @@ async function field_get(req, res, next) {
 
             const subscriptions = await Subscriptions.findAll({ where: { userId: req.user.id } });
             const fieldIds = subscriptions.map(s => s.fieldId);
-            console.log(fieldIds);
             whereClose.id = { [Op.notIn]: fieldIds }
         }
 
-        const allFields = await Fields.findAll({ where: whereClose });
+        const allFields = await Fields.findAll({ where: whereClose, order: [['createdAt', 'DESC']] });
 
         if (allFields.length === 0) {
             return next(createError(404, 'No fields found.'));
@@ -130,7 +129,7 @@ async function field_course(req, res, next) {
     }
 
     try {
-        const courses = await Courses.findAll({ where: { fieldId } });
+        const courses = await Courses.findAll({ where: { fieldId }, order: [['createdAt', 'ASC']]  });
         if (!courses.length) {
             return next(createError(404, 'No courses available for this field.'));
         }

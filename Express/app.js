@@ -69,7 +69,7 @@ if (process.env.NODE_ENV !== 'vercel') {
     const PORT = process.env.PORT || 7000;
     app.listen(PORT, (err) => {
       if (err) console.error(err);
-      console.log(`Server running at http://127.0.0.1:${PORT}`);
+      console.log(`Server running at ${process.env.DOMAIN || 'http://127.0.0.1' + PORT}`);
     });
   }).catch(err => console.error(err));
 }

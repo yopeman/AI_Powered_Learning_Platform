@@ -32,7 +32,7 @@ async function chapter_topics(req, res, next) {
     }
 
     try {
-        const topics = await Topics.findAll({ where: { chapterId } });
+        const topics = await Topics.findAll({ where: { chapterId }, order: [['createdAt', 'ASC']]  });
 
         if (!topics.length) {
             return next(createError(404, 'No topics found in this chapter.'));
