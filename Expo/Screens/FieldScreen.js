@@ -45,6 +45,7 @@ const FieldScreen = ({ route }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setError(null);
       if (!fieldId) return; // Prevent fetching if fieldId is not available
 
       setLoading(true);

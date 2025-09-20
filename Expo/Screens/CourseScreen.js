@@ -36,6 +36,7 @@ export default function CourseScreen({ navigation, route }) {
   useEffect(() => {
     const fetchCourseAndChapters = async () => {
       setLoading(true);
+      setError(null);
       try {
         const [courseResponse, chapterResponse] = await Promise.all([
           get_course_by_id(courseId),

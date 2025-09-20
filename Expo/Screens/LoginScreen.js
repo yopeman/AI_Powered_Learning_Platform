@@ -33,6 +33,7 @@ export default function LoginScreen() {
   const handleSubmit = async () => {
     Keyboard.dismiss();
     setLoading(true);
+    setError(null);
 
     try {
       const response = await authApi.post('/login', formData);

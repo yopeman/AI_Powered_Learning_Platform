@@ -46,6 +46,7 @@ const CertificateScreen = ({ navigation, route }) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setError(null);
       try {
         const link = await get_certification_document(fieldId);
         if (link) {
@@ -93,6 +94,7 @@ const CertificateScreen = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
       const calculatedScore = calculateScore().toFixed(2);
       await submit_certification_answer_results(fieldId, calculatedScore);

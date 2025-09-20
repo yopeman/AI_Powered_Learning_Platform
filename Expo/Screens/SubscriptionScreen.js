@@ -34,6 +34,7 @@ const SubscriptionScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchFields = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await get_all_fields();
         if (!response) {
@@ -41,7 +42,6 @@ const SubscriptionScreen = ({ navigation }) => {
           return;
         }
         setFields(response.data);
-        setError(null);
         setSuccess(response.data.message);
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -55,6 +55,7 @@ const SubscriptionScreen = ({ navigation }) => {
 
   const handleSubscribe = async (fieldId) => {
     setLoading(true);
+    setError(null);
     try {
       const result = await subscribe_field(fieldId);
       if (!result) {

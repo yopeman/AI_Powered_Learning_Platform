@@ -40,6 +40,7 @@ export default function PaymentScreen({ navigation }) {
   useEffect(() => {
     const fetchMyFields = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await get_my_fields();
         if (!response) {
@@ -81,6 +82,7 @@ export default function PaymentScreen({ navigation }) {
   const initiatePayment = async () => {
     try {
       setLoading(true);
+      setError(null);
       return await payment_init(formData);
     } catch (err) {
       setError(err.response?.data?.message || err.message);

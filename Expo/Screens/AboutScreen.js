@@ -25,6 +25,7 @@ export default function About() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
       const rsp = await AsyncStorage.getItem('response');
       const response = await api(JSON.parse(rsp).token).post('/feedbacks', { content, rating });

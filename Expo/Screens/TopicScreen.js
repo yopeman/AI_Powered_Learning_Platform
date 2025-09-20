@@ -42,6 +42,7 @@ const TopicScreen = ({ navigation, route }) => {
   useEffect(() => {
     const fetchContent = async () => {
       setLoading(true);
+      setError(null);
       try {
         const response = await get_topic_content(topicId);
         if (!response) {

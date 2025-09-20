@@ -51,6 +51,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setMessage({ text: '', type: '' });
       const response = await AsyncStorage.getItem('response');
       if (response) {
         const userData = JSON.parse(response).user;
@@ -69,6 +70,7 @@ export default function ProfileScreen() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
       const newResponse = { user: formData, token }
       const response = await api(token).put('/users/me', formData);
