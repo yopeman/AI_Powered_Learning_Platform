@@ -326,21 +326,21 @@ export default function Components() {
               {[
                 {
                   quote: '"The AI-powered learning experience is incredible. It\'s like having a personal tutor available 24/7."',
-                  name: 'Alex Smith',
+                  name: 'Melkamu Ayalew',
                   role: 'Computer Science Student',
                   initials: 'AS',
                   color: 'blue'
                 },
                 {
                   quote: '"As a teaching assistant, the content creation tools have revolutionized how I develop courses."',
-                  name: 'Maria Johnson',
+                  name: 'Yoseph Abate',
                   role: 'Teaching Assistant',
                   initials: 'MJ',
                   color: 'purple'
                 },
                 {
                   quote: '"The comprehensive analytics and user management features make administration effortless."',
-                  name: 'David Wilson',
+                  name: 'Leul Yenealem',
                   role: 'Platform Administrator',
                   initials: 'DW',
                   color: 'green'
@@ -467,7 +467,7 @@ export default function Components() {
                   </li>
                   <li className="flex items-start">
                     <Smartphone className="h-5 w-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                    <span>+1 (555) 123-4567</span>
+                    <span>+251 93 053 1637</span>
                   </li>
                   <li className="flex items-start">
                     <Lock className="h-5 w-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
